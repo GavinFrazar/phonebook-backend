@@ -6,9 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "build": "make",
-    "deploy": "make deploy"
+    "dev": "nodemon index.js"
   },
   "author": "Gavin Frazar",
   "license": "MIT",
