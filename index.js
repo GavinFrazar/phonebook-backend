@@ -91,10 +91,10 @@ app.post("/api/persons", (req, res, next) => {
     number: body.number,
   });
 
-  newPerson
-    .save()
+  Person.init()
+    .then(() => newPerson.save())
     .then((savedPerson) => {
-      res.json(newPerson);
+      res.json(savedPerson);
     })
     .catch((error) => next(error));
 });
@@ -138,9 +138,12 @@ app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
   console.log(error);
+  console.log(Object.getOwnPropertyNames(error));
 
   if (error.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "MongoError" && error.code === 11000) {
+    return res.status(400).send({ error: "Duplicate name in phonebook" });
   }
 
   next(error);
