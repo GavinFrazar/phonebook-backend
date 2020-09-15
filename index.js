@@ -54,7 +54,11 @@ app.delete("/api/persons/:id", (req, res, next) => {
 
   Person.findByIdAndRemove(id)
     .then((result) => {
-      res.status(204).end();
+      if (result) {
+        res.status(204).end();
+      } else {
+        res.status(404).end();
+      }
     })
     .catch((error) => next(error));
 });
