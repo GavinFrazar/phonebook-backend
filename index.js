@@ -44,8 +44,9 @@ let persons = [
 
 app.get("/api/persons", (req, res, next) => {
   Person.find({})
-    .then((people) => {
-      res.json(people);
+    .then((people) => people.toJSON())
+    .then((peopleJSON) => {
+      res.json(peopleJSON);
     })
     .catch((error) => next(error));
 });
@@ -93,9 +94,8 @@ app.post("/api/persons", (req, res, next) => {
 
   Person.init()
     .then(() => newPerson.save())
-    .then((savedPerson) => {
-      res.json(savedPerson);
-    })
+    .then((savedPerson) => savedPerson.toJSON())
+    .then((savedPersonJSON) => res.json(savedPersonJSON))
     .catch((error) => next(error));
 });
 
@@ -109,9 +109,8 @@ app.put("/api/persons/:id", (req, res, next) => {
   };
 
   Person.findByIdAndUpdate(id, person, { new: true })
-    .then((updatedPerson) => {
-      res.json(updatedPerson);
-    })
+    .then((updatedPerson) => updatedPerson.toJSON())
+    .then((updatedPersonJSON) => res.json(updatedPersonJSON))
     .catch((error) => next(error));
 });
 
