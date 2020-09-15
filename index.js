@@ -26,7 +26,7 @@ app.use(
 
 app.get("/api/persons", (req, res, next) => {
   Person.find({})
-    .then((people) => people.toJSON())
+    .then((people) => people.map((person) => person.toJSON()))
     .then((peopleJSON) => {
       res.json(peopleJSON);
     })
