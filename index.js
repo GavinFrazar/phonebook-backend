@@ -94,13 +94,23 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(id, person, { new: true })
-    .then((updatedPerson) => updatedPerson.toJSON())
+  Person.findByIdAndUpdate(id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        updatedPerson.toJSON();
+      } else {
+        res.status(404).send({ error: `${person.name} not in database` });
+      }
+    })
     .then((updatedPersonJSON) => res.json(updatedPersonJSON))
     .catch((error) => next(error));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, res, next) => {
   Person.countDocuments({})
     .then((person_count) => {
       const date = new Date();
@@ -122,9 +132,6 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error);
-  console.log(Object.getOwnPropertyNames(error));
-
   if (error.name === "ValidationError") {
     return res.status(400).json({ error: error.message });
   } else if (error.name === "CastError") {
